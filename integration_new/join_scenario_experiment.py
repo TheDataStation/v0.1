@@ -115,20 +115,17 @@ SELECT COUNT(*) FROM ORDERS1 o1 JOIN ORDERS2 o2 ON o1.o_custkey = o2.o_custkey;"
     # For recording time: run it 11 times (extra times for warmup)
     if num_MB == 7:
         num_MB = 10
-    start_time = time.time()
+    start_time = time.perf_counter()
     for _ in range(2):
-        run_start_time = time.time()
+        run_start_time = time.perf_counter()
         res = ds.call_api(agent_1_token, f, query)
-        run_end_time = time.time()
+        run_end_time = time.perf_counter()
         # 1: fixed overhead 2: join DE time 3: model train time 4: fixed overhead
         with open(f"numbers/intermediate/{num_MB}_{model_name}_{save_intermediate}.csv", "a") as file:
             writer = csv.writer(file)
             if res["result"] is not None:
-                writer.writerow([res["experiment_time_arr"][0] - run_start_time,
-                                 res["result"][1] - res["experiment_time_arr"][0],
-                                 res["experiment_time_arr"][1] - res["result"][1],
-                                 run_end_time-res["experiment_time_arr"][1]])
-    print("Time for all runs", time.time() - start_time)
+                writer.writerow([num_MB,run_end_time - run_start_time])
+    print("Time for all runs", time.perf_counter() - start_time)
 
     # Last step: shut down the Data Station
     ds.shut_down()
