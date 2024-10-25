@@ -100,7 +100,7 @@ CREATE TABLE ORDERS2  ( O_ORDERKEY       INTEGER NOT NULL,
 COPY ORDERS1 FROM '{de1_filepath}' DELIMITER '|';
 COPY ORDERS2 FROM '{de2_filepath}' DELIMITER '|';
 
-SELECT COUNT(*) FROM ORDERS1 JOIN ORDERS2 ON o1.o_custkey = o2.o_custkey"""
+SELECT COUNT(*) FROM ORDERS1 JOIN ORDERS2 ON o1.o_custkey = o2.o_custkey;"""
     print(ds.call_api(agent_1_token, "propose_contract",
                       dest_agents, data_elements, f,
                       # function parameters
