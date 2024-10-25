@@ -68,15 +68,12 @@ if __name__ == '__main__':
         f = open(agent_de, "rb")
         plaintext_bytes = f.read()
         f.close()
-        print(plaintext_bytes)
         print(ds.call_api(cur_token, "upload_data_in_csv", plaintext_bytes))
 
     # Step 3: Train the joint model.
     dest_agents = [1]
     data_elements = [1, 2]
     f = "run_query"
-    label_name = "clicked_on_ad"
-    # "select youtube.male, less_than_twenty_five, live_in_states, married, liked_games_page, clicked_on_ad from facebook inner join youtube on facebook.first_name = youtube.first_name and facebook.last_name = youtube.last_name"
     query = """
 CREATE TABLE ORDERS1  ( O_ORDERKEY       INTEGER NOT NULL,
             O_CUSTKEY        INTEGER NOT NULL,
