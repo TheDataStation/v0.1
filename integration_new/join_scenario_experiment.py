@@ -10,17 +10,12 @@ from main import initialize_system
 from common.general_utils import clean_test_env
 from crypto import cryptoutils as cu
 
-NUMBERS_DIR = "./experiments"
+NUMBERS_DIR = "./experiments/join"
 
 if __name__ == '__main__':
 
     # Experiment setups
     num_MB = sys.argv[1]
-    if sys.argv[2] == "False":
-        save_intermediate = False
-    else:
-        save_intermediate = True
-    model_name = sys.argv[3]
 
     # Clean up
     clean_test_env()
@@ -123,7 +118,7 @@ SELECT COUNT(*) FROM ORDERS1 o1 JOIN ORDERS2 o2 ON o1.o_custkey = o2.o_custkey;"
         res = ds.call_api(agent_1_token, f, query)
         run_end_time = time.perf_counter()
         # 1: fixed overhead 2: join DE time 3: model train time 4: fixed overhead
-        with open(f"{NUMBERS_DIR}/{num_MB}_{model_name}_{save_intermediate}.csv", "a") as file:
+        with open(f"{NUMBERS_DIR}/{num_MB}.csv", "a") as file:
             writer = csv.writer(file)
             if res["result"] is not None:
                 writer.writerow([run_end_time - run_start_time])
