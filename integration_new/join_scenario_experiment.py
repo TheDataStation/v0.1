@@ -17,6 +17,8 @@ if __name__ == '__main__':
     # Experiment setups
     num_MB = sys.argv[1]
 
+    num_trials = int(sys.argv[2])
+
     # Clean up
     clean_test_env()
 
@@ -113,7 +115,7 @@ SELECT COUNT(*) FROM ORDERS1 o1 JOIN ORDERS2 o2 ON o1.o_custkey = o2.o_custkey;"
     # Create experiment directory
     os.makedirs(NUMBERS_DIR, exist_ok=True)
 
-    for _ in range(2):
+    for _ in range(num_trials):
         run_start_time = time.perf_counter()
         res = ds.call_api(agent_1_token, f, query)
         run_end_time = time.perf_counter()
