@@ -119,6 +119,11 @@ SELECT COUNT(*) FROM ORDERS1 o1 JOIN ORDERS2 o2 ON o1.o_custkey = o2.o_custkey;"
         run_start_time = time.perf_counter()
         res = ds.call_api(agent_1_token, f, query)
         run_end_time = time.perf_counter()
+        exp_start = res["experiment_time_arr"][0]
+        exp_end = res["experiment_time_arr"][1]
+        decrypt_time = res["experiment_time_arr"][2]
+        print("Experiment time:", exp_end - exp_start)
+        print("Decrypt time:", decrypt_time)
         # 1: fixed overhead 2: join DE time 3: model train time 4: fixed overhead
         with open(f"{NUMBERS_DIR}/{num_MB}.csv", "a") as file:
             writer = csv.writer(file)
