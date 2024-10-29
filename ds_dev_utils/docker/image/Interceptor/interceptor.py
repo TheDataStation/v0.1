@@ -311,7 +311,7 @@ class Xmp(Fuse):
                                 decryption_time_dict_global["total_decryption_time"] += decryption_time
 
             def read(self, length, offset):
-                print("Interceptor: I am reading " + str(self.file_path))
+                # print("Interceptor: I am reading " + str(self.file_path))
 
                 if self.iolock:
                     self.iolock.acquire()
