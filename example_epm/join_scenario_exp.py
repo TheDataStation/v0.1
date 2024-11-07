@@ -45,7 +45,7 @@ def run_query(query):
     res_df = conn.execute(updated_query).fetchdf()
     query_end_time = time.perf_counter()
     conn.close()
-    print(query_end_time - query_start_time)
+    print("total query time: ", query_end_time - query_start_time)
     return res_df
 
 
