@@ -63,7 +63,10 @@ def load_mnist(image_path, label_path):
 
     return images, labels
 
-def create_mnist_dataloader(train_image_idx, train_label_idx, test_image_idx, test_label_idx, data_size, batch_size):
+def get_raw_mnist_data(train_image_idx, train_label_idx, test_image_idx, test_label_idx):
+    """
+    Given the indices of the mnist data elements, returns the raw data
+    """
     X_train, y_train = load_mnist(
         EscrowAPI.CSVDEStore.read(train_image_idx),
         EscrowAPI.CSVDEStore.read(train_label_idx)
@@ -72,6 +75,14 @@ def create_mnist_dataloader(train_image_idx, train_label_idx, test_image_idx, te
         EscrowAPI.CSVDEStore.read(test_image_idx),
         EscrowAPI.CSVDEStore.read(test_label_idx)
     )
+    
+    return X_train, y_train, X_test, y_test
+
+
+def create_mnist_dataloader(X_train, y_train, X_test, y_test, data_size, batch_size):
+    """
+    Given sets of train and test data, turns the mnist data into dataloaders
+    """
     
     print(X_train.shape)
     print(type(X_train))
@@ -134,7 +145,7 @@ def test(dataloader, model, loss_fn):
 
 @api_endpoint
 @function
-def train_mnist(data_size):
+def train_mnist():
     """
     trains a simple model on mnist dataset
     """
@@ -161,7 +172,7 @@ def train_mnist(data_size):
             logits = self.linear_relu_stack(x)
             return logits
         
-    train_loader, test_loader = create_mnist_dataloader(1, 2, 3, 4, data_size, 64)
+    X_train, y_train, X_test, y_test = get_raw_mnist_data(1, 2, 3, 4)
     
     loss_fn = nn.CrossEntropyLoss()
 
@@ -171,7 +182,8 @@ def train_mnist(data_size):
         model = NeuralNetwork().to("cpu")
         optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
         for epoch in range(epochs):
-            # train_dataloader_subset = DataLoader(subset_training_data, batch_size=batch_size)
+            train_loader, test_loader = create_mnist_dataloader(X_train, y_train, X_test, y_test, datasize, 64)
+
             print(f"Epoch {epoch+1}\n-------------------------------")
             epoch_time_start = time.perf_counter()
             train(train_loader, model, loss_fn, optimizer)

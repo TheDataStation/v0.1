@@ -78,11 +78,11 @@ if __name__ == '__main__':
     dest_agents = [1]
     data_elements = [1, 2, 3, 4]
     f = "train_mnist"
-    param = 60000
+    # param = 60000
     print(ds.call_api(agent_1_token, "propose_contract",
                       dest_agents, data_elements, f,
                       # function parameters
-                      param))
+                      ))
     print(ds.call_api(agent_1_token, "approve_contract", 1))
     print(ds.call_api(agent_2_token, "approve_contract", 1))
 
@@ -97,7 +97,7 @@ if __name__ == '__main__':
 
     for _ in range(1):
         run_start_time = time.perf_counter()
-        res = ds.call_api(agent_1_token, f, param)
+        res = ds.call_api(agent_1_token, f, )
         run_end_time = time.perf_counter()
         print("result: ", res)
         # exp_start = res["experiment_time_arr"][0]
