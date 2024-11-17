@@ -102,7 +102,7 @@ if __name__ == '__main__':
         print("result: ", res)
         
         # res_df = pd.DataFrame(res)
-        res['result'].to_csv(f"{NUMBERS_DIR}/result.csv", index=False)
+        res['result'].to_csv(f"{NUMBERS_DIR}/mnist.csv", index=False)
         # exp_start = res["experiment_time_arr"][0]
         # exp_end = res["experiment_time_arr"][1]
         # decrypt_time = res["experiment_time_arr"][2]
