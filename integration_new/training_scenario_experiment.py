@@ -100,6 +100,9 @@ if __name__ == '__main__':
         res = ds.call_api(agent_1_token, f, )
         run_end_time = time.perf_counter()
         print("result: ", res)
+        
+        # res_df = pd.DataFrame(res)
+        res.to_csv(f"{NUMBERS_DIR}/result.csv", index=False)
         # exp_start = res["experiment_time_arr"][0]
         # exp_end = res["experiment_time_arr"][1]
         # decrypt_time = res["experiment_time_arr"][2]
