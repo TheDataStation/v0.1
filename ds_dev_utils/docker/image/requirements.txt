@@ -7,3 +7,4 @@ pandas==1.3.5
 duckdb
 scipy
 scikit-learn==1.2.0
+torch
