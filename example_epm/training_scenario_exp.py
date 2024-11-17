@@ -6,7 +6,6 @@ import duckdb
 import torch
 from torch import nn
 from torch.utils.data import Dataset, DataLoader, TensorDataset, Subset
-import gzip
 import pandas as pd
 
 import numpy as np
