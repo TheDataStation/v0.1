@@ -183,10 +183,10 @@ def train_mnist(data_size):
             test_duration = test_end_time - test_start_time
 
             print(f"Epoch {epoch+1} took {epoch_duration} seconds")
-            return_df = pd.concat([return_df, pd.DataFrame({"epoch_duration": 1,
-                                    "epoch": epoch_duration,
-                                    "batch_size": epoch,
-                                    "data_size": batch_size,
+            return_df = pd.concat([return_df, pd.DataFrame({"epoch_duration": epoch_duration,
+                                    "epoch": epoch,
+                                    "batch_size": batch_size,
+                                    "data_size": datasize,
                                     "accuracy": accuracy,
                                     "test_duration": test_duration}, index=[0])], ignore_index=True)
 
