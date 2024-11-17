@@ -138,6 +138,8 @@ def train_mnist(data_size):
     """
     trains a simple model on mnist dataset
     """
+    torch.set_num_threads(1)
+
     
     # return dataframe
     return_df = pd.DataFrame(columns=["epoch_duration", "epoch", "batch_size", "data_size", "accuracy", "test_duration"])
