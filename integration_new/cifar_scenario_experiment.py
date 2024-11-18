@@ -64,13 +64,18 @@ if __name__ == '__main__':
         if agent == "1":
             cur_token = agent_1_token
             prefix = "train"
+            # agent 1 has train, agent 2 has test. This doesn't matter because 
+            # integration in this case is simply an append.
+            agent_des = [f"cifar_data/cifar-10-batches-py/data_batch_1",
+                f"cifar_data/cifar-10-batches-py/data_batch_2",
+                f"cifar_data/cifar-10-batches-py/data_batch_3",
+                f"cifar_data/cifar-10-batches-py/data_batch_4",
+                f"cifar_data/cifar-10-batches-py/data_batch_5"]
         else:
             cur_token = agent_2_token
             prefix = "t10k"
-        # agent 1 has train, agent 2 has test. This doesn't matter because 
-        # integration in this case is simply an append.
-        agent_des = [f"fashion-mnist/data/fashion/{prefix}-images-idx3-ubyte",
-                     f"fashion-mnist/data/fashion/{prefix}-labels-idx1-ubyte"]
+            agent_des = [f"cifar_data/cifar-10-batches-py/test_batch"]
+        
         # agent_de = f"integration_new/test_files/advertising_p/exp/{agent}_{int(num_MB)}.csv"
         for agent_de in agent_des:
             f = open(agent_de, "rb")
@@ -80,7 +85,7 @@ if __name__ == '__main__':
 
     # Step 3: Train the joint model.
     dest_agents = [1]
-    data_elements = [1, 2, 3, 4]
+    data_elements = [1, 2, 3, 4, 5, 6]
     f = "train_mnist"
     # param = 60000
     print(ds.call_api(agent_1_token, "propose_contract",
@@ -106,7 +111,7 @@ if __name__ == '__main__':
         print("result: ", res)
         
         # res_df = pd.DataFrame(res)
-        res['result'].to_csv(f"{NUMBERS_DIR}/mnist.csv", index=False)
+        res['result'].to_csv(f"{NUMBERS_DIR}/cifar.csv", index=False)
         # exp_start = res["experiment_time_arr"][0]
         # exp_end = res["experiment_time_arr"][1]
         # decrypt_time = res["experiment_time_arr"][2]
