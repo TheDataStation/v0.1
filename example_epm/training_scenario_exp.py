@@ -6,6 +6,7 @@ import duckdb
 import torch
 from torch import nn
 from torch.utils.data import Dataset, DataLoader, TensorDataset, Subset
+from torchvision import transforms
 import pandas as pd
 import pickle
 
@@ -24,6 +25,9 @@ def approve_contract(contract_id):
     return EscrowAPI.approve_contract(contract_id)
 
 def load_cifar(cifar_paths_train, cifar_path_test):
+    """
+    Takes in a list of 5 cifar paths plus the test path, and returns the data in np arrays
+    """
     X_train = None
     y_train = None
     for cifar_path in cifar_paths_train:
@@ -41,6 +45,48 @@ def load_cifar(cifar_paths_train, cifar_path_test):
     X_test = data[b'data']
     y_test = data[b'labels']
     return X_train, y_train, X_test, y_test
+
+def get_np_cifar_data(train_data_idxs, test_data_idx):
+    """
+    Returns the cifar data in np arrays
+    """
+    cifar_paths_train = []
+    for idx in train_data_idxs:
+        cifar_paths_train.append(EscrowAPI.CSVDEStore.read(idx))
+    cifar_path_test = EscrowAPI.CSVDEStore.read(test_data_idx)
+    X_train, y_train, X_test, y_test = load_cifar(cifar_paths_train, cifar_path_test)
+    return X_train, y_train, X_test, y_test
+
+def create_cifar_dataloader(X_train, y_train, X_test, y_test, data_size, batch_size):
+    """
+    Given sets of train and test data in np arrays, turns the cifar data into dataloaders
+    """
+    # convert from numpy to tensor and normalize
+    X_train = torch.from_numpy(X_train).float()/255.0
+    X_test = torch.from_numpy(X_test).float()/255.0
+    
+    # convert to tensor
+    y_train = torch.tensor(y_train).long()
+    y_test = torch.tensor(y_test).long()
+
+    # reshape
+    X_train = X_train.reshape(-1, 3, 32, 32)
+    X_test = X_test.reshape(-1, 3, 32, 32)
+
+    # normalize over -1 to 1
+    X_train = transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))(X_train)
+    X_test = transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))(X_test)
+
+    train_dataset = TensorDataset(X_train, y_train)
+    test_dataset = TensorDataset(X_test, y_test)
+    
+    train_dataset = Subset(train_dataset, range(data_size))
+    
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+
+    return train_loader, test_loader
+
 
 # code is modified from mnist_reader.py in fashion-mnist repository
 def load_mnist(image_path, label_path):
@@ -135,6 +181,40 @@ def test(dataloader, model, loss_fn):
     correct /= size
     print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
     return correct
+
+@api_endpoint
+@function
+def train_cifar():
+    """
+    trains a simple model on cifar dataset
+    """
+    torch.set_num_threads(1)
+
+    # return dataframe
+    return_df = pd.DataFrame(columns=["epoch_duration", "epoch", "batch_size", "data_size", "accuracy", "test_duration"])
+
+    class CifarNetwork(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.conv1 = nn.Conv2d(3, 6, 5)
+            self.pool = nn.MaxPool2d(2, 2)
+            self.conv2 = nn.Conv2d(6, 16, 5)
+            self.fc1 = nn.Linear(16 * 5 * 5, 120)
+            self.fc2 = nn.Linear(120, 84)
+            self.fc3 = nn.Linear(84, 10)
+
+        def forward(self, x):
+            x = self.pool(F.relu(self.conv1(x)))
+            x = self.pool(F.relu(self.conv2(x)))
+            x = torch.flatten(x, 1) # flatten all dimensions except batch
+            x = F.relu(self.fc1(x))
+            x = F.relu(self.fc2(x))
+            x = self.fc3(x)
+            return x
+
+    X_train, y_train, X_test, y_test = get_np_cifar_data([1, 2, 3, 4, 5], 6)
+    
+    loss_fn = nn.CrossEntropyLoss()
 
 @api_endpoint
 @function
