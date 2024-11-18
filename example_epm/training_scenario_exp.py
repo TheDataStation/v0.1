@@ -7,6 +7,7 @@ import torch
 from torch import nn
 from torch.utils.data import Dataset, DataLoader, TensorDataset, Subset
 import pandas as pd
+import pickle
 
 import numpy as np
 
@@ -22,32 +23,24 @@ def propose_contract(dest_agents, des, f, *args, **kwargs):
 def approve_contract(contract_id):
     return EscrowAPI.approve_contract(contract_id)
 
-@api_endpoint
-def upload_data_in_csv(content):
-    return EscrowAPI.CSVDEStore.write(content)
-
-# What should the income query look like? We will do a query replacement
-# select * from facebook
-# select facebook.firstname from facebook
-
-# update_query will do replace("facebook") with read_csv_auto("path_to_facebook") as facebook
-# (and similarly for YouTube)
-def update_query(query):
-    formatted = query.format(de1_filepath = EscrowAPI.CSVDEStore.read(1), de2_filepath = EscrowAPI.CSVDEStore.read(2))
-    return formatted
-
-@api_endpoint
-@function
-def run_query(query):
-    """
-    Run a user given query.
-    """
-    updated_query = update_query(query)
-    print(updated_query)
-    conn = duckdb.connect()
-    res_df = conn.execute(updated_query).fetchdf()
-    conn.close()
-    return res_df
+def load_cifar(cifar_paths_train, cifar_path_test):
+    X_train = None
+    y_train = None
+    for cifar_path in cifar_paths_train:
+        with open(cifar_path, 'rb') as f:
+            data = pickle.load(f, encoding='bytes')
+        
+        if X_train is None:
+            X_train = data[b'data']
+            y_train = data[b'labels']
+        else:
+            X_train = np.vstack((X_train, data[b'data']))
+            y_train = np.hstack((y_train, data[b'labels']))
+    with open(cifar_path_test, 'rb') as f:
+        data = pickle.load(f, encoding='bytes')
+    X_test = data[b'data']
+    y_test = data[b'labels']
+    return X_train, y_train, X_test, y_test
 
 # code is modified from mnist_reader.py in fashion-mnist repository
 def load_mnist(image_path, label_path):
