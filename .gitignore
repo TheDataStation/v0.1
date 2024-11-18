@@ -41,6 +41,9 @@ integration_new/test_files
 tpch_data/*
 integration_new/baseline_sql_script.py
 
+# cifar10 data
+cifar_data
+
 # C extensions
 *.so
 

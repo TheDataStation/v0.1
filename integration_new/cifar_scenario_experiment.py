@@ -5,6 +5,7 @@ import csv
 import pandas as pd
 from faker import Faker
 import time
+from torchvision import datasets
 
 from main import initialize_system
 from common.general_utils import clean_test_env
@@ -13,7 +14,10 @@ from crypto import cryptoutils as cu
 NUMBERS_DIR = "./experiments/ml"
 
 if __name__ == '__main__':
-
+    
+    _ = datasets.CIFAR10(root='./cifar_data', train=True, download=True)
+    _ = datasets.CIFAR10(root='./cifar_data', train=False, download=True)
+    
     # Experiment setups
     # num_MB = sys.argv[1]
 
