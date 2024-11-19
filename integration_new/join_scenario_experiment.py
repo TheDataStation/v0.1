@@ -122,6 +122,7 @@ SELECT DISTINCT o1.o_custkey FROM ORDERS1 o1 JOIN ORDERS2 o2 ON o1.o_custkey = o
         exp_start = res["experiment_time_arr"][0]
         exp_end = res["experiment_time_arr"][1]
         decrypt_time = res["experiment_time_arr"][2]
+        read_time = res["experiment_time_arr"][3]
         print("Experiment time:", exp_end - exp_start)
         print("Decrypt time:", decrypt_time)
         # 1: fixed overhead 2: join DE time 3: model train time 4: fixed overhead

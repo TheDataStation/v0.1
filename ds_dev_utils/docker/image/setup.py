@@ -215,7 +215,8 @@ def main():
     else:
         data_accessed = []
     decryption_time = dict(experiment_time_dict)["total_decryption_time"]
-    experiment_time_arr = [f_start_time, f_end_time, decryption_time]
+    read_time = dict(experiment_time_dict)["total_read_time"]
+    experiment_time_arr = [f_start_time, f_end_time, decryption_time, read_time]
 
     # Remove newly created files
     filtered_de_accessed = set(filter(lambda x: x.split("/")[-3] != "Staging_storage", data_accessed))

@@ -289,6 +289,8 @@ class Xmp(Fuse):
                                 # print(f"Number of reads is {num_reads}")
                                 bytes_read = 0
                                 encrypted_bytes = bytes()
+                                total_read_time = 0
+                                read_time = time.perf_counter()
                                 for i in range(num_reads):
                                     if i != num_reads - 1:
                                         cur_chunk_bytes = os.pread(self.fd, chunk_size, bytes_read)
@@ -297,6 +299,7 @@ class Xmp(Fuse):
                                         cur_chunk_bytes = os.pread(self.fd, file_size - bytes_read, bytes_read)
                                         encrypted_bytes += cur_chunk_bytes
                                         bytes_read += chunk_size
+                                decryption_time_dict_global["total_read_time"] += time.perf_counter() - read_time
                                 print("Decryption starting......")
                                 # print(len(encrypted_bytes))
                                 # print(type(encrypted_bytes))
@@ -595,6 +598,7 @@ def main(root_dir,
     global decryption_time_dict_global
     decryption_time_dict_global = decryption_time_dict
     decryption_time_dict_global["total_decryption_time"] = 0
+    decryption_time_dict_global["total_read_time"] = 0
 
     usage = """
 Userspace nullfs-alike: mirror the filesystem tree from some point on.
