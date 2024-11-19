@@ -10,5 +10,5 @@ app_state_path: "./SM_storage/app_state.pkl"
 database_url: "sqlite:///./data_station.db"
 epf_path: "examples/join_scenario/join_scenario_epm.py"
 trust_mode: "no_trust"
-in_development_mode: True # when setting to True, functions don't run through Docker
+in_development_mode: False # when setting to True, functions don't run through Docker
 operating_system: "linux"
