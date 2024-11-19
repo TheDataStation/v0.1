@@ -185,7 +185,7 @@ def test(dataloader, model, loss_fn):
 
 @api_endpoint
 @function
-def train_cifar():
+def train_cifar(datasize):
     """
     trains a simple model on cifar dataset
     """
@@ -219,32 +219,33 @@ def train_cifar():
 
     batch_size = 4
     epochs = 3
-    for datasize in [6250, 12500,25000,50000]:
-        model = CifarNetwork().to("cpu")
-        optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+    
+    # train model
+    model = CifarNetwork().to("cpu")
+    optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-        for epoch in range(epochs):
-            train_dataloader_subset, test_dataloader = create_cifar_dataloader(X_train, y_train, X_test, y_test, datasize, batch_size)
+    for epoch in range(epochs):
+        train_dataloader_subset, test_dataloader = create_cifar_dataloader(X_train, y_train, X_test, y_test, datasize, batch_size)
 
-            print(f"Epoch {epoch+1}\n-------------------------------")
-            epoch_time_start = time.perf_counter()
-            train(train_dataloader_subset, model, loss_fn, optimizer)
-            epoch_time_end = time.perf_counter()
+        print(f"Epoch {epoch+1}\n-------------------------------")
+        epoch_time_start = time.perf_counter()
+        train(train_dataloader_subset, model, loss_fn, optimizer)
+        epoch_time_end = time.perf_counter()
 
-            test_start_time = epoch_time_end
-            accuracy = test(test_dataloader, model, loss_fn)
-            test_end_time = time.perf_counter()
+        test_start_time = epoch_time_end
+        accuracy = test(test_dataloader, model, loss_fn)
+        test_end_time = time.perf_counter()
 
-            epoch_duration = epoch_time_end - epoch_time_start
-            test_duration = test_end_time - test_start_time
+        epoch_duration = epoch_time_end - epoch_time_start
+        test_duration = test_end_time - test_start_time
 
-            print(f"Epoch {epoch+1} took {epoch_duration} seconds")
-            return_df = pd.concat([return_df, pd.DataFrame({"epoch_duration": epoch_duration,
-                                    "epoch": epoch,
-                                    "batch_size": batch_size,
-                                    "data_size": datasize,
-                                    "accuracy": accuracy,
-                                    "test_duration": test_duration}, index=[0])], ignore_index=True)
+        print(f"Epoch {epoch+1} took {epoch_duration} seconds")
+        return_df = pd.concat([return_df, pd.DataFrame({"epoch_duration": epoch_duration,
+                                "epoch": epoch,
+                                "batch_size": batch_size,
+                                "data_size": datasize,
+                                "accuracy": accuracy,
+                                "test_duration": test_duration}, index=[0])], ignore_index=True)
 
             # print(f"Epoch {epoch+1} took {epoch_duration} seconds")
             # with open("datasize_cifar_nn.csv", "a") as fp:
@@ -257,7 +258,7 @@ def train_cifar():
 
 @api_endpoint
 @function
-def train_mnist():
+def train_mnist(datasize):
     """
     trains a simple model on mnist dataset
     """
@@ -290,31 +291,33 @@ def train_mnist():
 
     epochs = 3
     batch_size = 64
-    for datasize in [7500,15000,30000,60000]:
-        model = NeuralNetwork().to("cpu")
-        optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
-        for epoch in range(epochs):
-            train_loader, test_loader = create_mnist_dataloader(X_train, y_train, X_test, y_test, datasize, 64)
+    # for datasize in [7500,15000,30000,60000]:
+    
+    # train model
+    model = NeuralNetwork().to("cpu")
+    optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+    for epoch in range(epochs):
+        train_loader, test_loader = create_mnist_dataloader(X_train, y_train, X_test, y_test, datasize, 64)
 
-            print(f"Epoch {epoch+1}\n-------------------------------")
-            epoch_time_start = time.perf_counter()
-            train(train_loader, model, loss_fn, optimizer)
-            epoch_time_end = time.perf_counter()
+        print(f"Epoch {epoch+1}\n-------------------------------")
+        epoch_time_start = time.perf_counter()
+        train(train_loader, model, loss_fn, optimizer)
+        epoch_time_end = time.perf_counter()
 
-            test_start_time = epoch_time_end
-            accuracy = test(test_loader, model, loss_fn)
-            test_end_time = time.perf_counter()
+        test_start_time = epoch_time_end
+        accuracy = test(test_loader, model, loss_fn)
+        test_end_time = time.perf_counter()
 
-            epoch_duration = epoch_time_end - epoch_time_start
-            test_duration = test_end_time - test_start_time
+        epoch_duration = epoch_time_end - epoch_time_start
+        test_duration = test_end_time - test_start_time
 
-            print(f"Epoch {epoch+1} took {epoch_duration} seconds")
-            return_df = pd.concat([return_df, pd.DataFrame({"epoch_duration": epoch_duration,
-                                    "epoch": epoch,
-                                    "batch_size": batch_size,
-                                    "data_size": datasize,
-                                    "accuracy": accuracy,
-                                    "test_duration": test_duration}, index=[0])], ignore_index=True)
+        print(f"Epoch {epoch+1} took {epoch_duration} seconds")
+        return_df = pd.concat([return_df, pd.DataFrame({"epoch_duration": epoch_duration,
+                                "epoch": epoch,
+                                "batch_size": batch_size,
+                                "data_size": datasize,
+                                "accuracy": accuracy,
+                                "test_duration": test_duration}, index=[0])], ignore_index=True)
 
             # with open("datasize_nn.csv", "a") as fp:
             #     wr = csv.writer(fp, dialect='excel')
