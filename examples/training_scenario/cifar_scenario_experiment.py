@@ -21,7 +21,7 @@ if __name__ == '__main__':
     # Experiment setups
     # num_MB = sys.argv[1]
 
-    # num_trials = int(sys.argv[2])
+    num_trials = int(sys.argv[1])
 
     # Clean up
     clean_test_env()
@@ -87,42 +87,39 @@ if __name__ == '__main__':
     dest_agents = [1]
     data_elements = [1, 2, 3, 4, 5, 6]
     f = "train_cifar"
-    # param = 60000
-    print(ds.call_api(agent_1_token, "propose_contract",
-                      dest_agents, data_elements, f,
-                      # function parameters
-                      ))
-    print(ds.call_api(agent_1_token, "approve_contract", 1))
-    print(ds.call_api(agent_2_token, "approve_contract", 1))
-
-    # res_1 = ds.call_api(facebook_token, "train_model_over_joined_data", label_name, query)
-    # print(res_1.coef_)
-
-    # For recording time: run it 11 times (extra times for warmup)
-    start_time = time.perf_counter()
-
+    
     # Create experiment directory
     os.makedirs(NUMBERS_DIR, exist_ok=True)
 
-    for _ in range(1):
-        run_start_time = time.perf_counter()
-        res = ds.call_api(agent_1_token, f, )
-        run_end_time = time.perf_counter()
-        print("result: ", res)
-        
-        # res_df = pd.DataFrame(res)
-        res['result'].to_csv(f"{NUMBERS_DIR}/cifar.csv", index=False)
-        # exp_start = res["experiment_time_arr"][0]
-        # exp_end = res["experiment_time_arr"][1]
-        # decrypt_time = res["experiment_time_arr"][2]
-        # print("Experiment time:", exp_end - exp_start)
-        # print("Decrypt time:", decrypt_time)
-        # # 1: fixed overhead 2: join DE time 3: model train time 4: fixed overhead
-        # with open(f"{NUMBERS_DIR}/{num_MB}.csv", "a") as file:
-        #     writer = csv.writer(file)
-        #     if res["result"] is not None:
-        #         writer.writerow([run_end_time - run_start_time])
-    print("Time for all runs", time.perf_counter() - start_time)
+    for datasize in [6250, 12500, 25000, 50000]:
+        print(ds.call_api(agent_1_token, "propose_contract",
+                        dest_agents, data_elements, f,
+                        # function parameters
+                        datasize
+                        ))
+        print(ds.call_api(agent_1_token, "approve_contract", 1))
+        print(ds.call_api(agent_2_token, "approve_contract", 1))
+
+
+        for _ in range(num_trials):
+            run_start_time = time.perf_counter()
+            res = ds.call_api(agent_1_token, f, datasize)
+            run_end_time = time.perf_counter()
+            print("result: ", res)
+            
+            # res_df = pd.DataFrame(res)
+            res['result'].to_csv(f"{NUMBERS_DIR}/cifar.csv", mode='a', index=False)
+            # exp_start = res["experiment_time_arr"][0]
+            # exp_end = res["experiment_time_arr"][1]
+            # decrypt_time = res["experiment_time_arr"][2]
+            # print("Experiment time:", exp_end - exp_start)
+            # print("Decrypt time:", decrypt_time)
+            # # 1: fixed overhead 2: join DE time 3: model train time 4: fixed overhead
+            with open(f"{NUMBERS_DIR}/cifar_total_time.csv", "a") as file:
+                writer = csv.writer(file)
+                if res["result"] is not None:
+                    writer.writerow([run_end_time - run_start_time, datasize])
+    # print("Time for all runs", time.perf_counter() - start_time)
 
     # Last step: shut down the Data Station
     ds.shut_down()
