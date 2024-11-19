@@ -289,7 +289,6 @@ class Xmp(Fuse):
                                 # print(f"Number of reads is {num_reads}")
                                 bytes_read = 0
                                 encrypted_bytes = bytes()
-                                total_read_time = 0
                                 read_time = time.perf_counter()
                                 for i in range(num_reads):
                                     if i != num_reads - 1:
