@@ -86,7 +86,7 @@ if __name__ == '__main__':
     # Step 3: Train the joint model.
     dest_agents = [1]
     data_elements = [1, 2, 3, 4, 5, 6]
-    f = "train_mnist"
+    f = "train_cifar"
     # param = 60000
     print(ds.call_api(agent_1_token, "propose_contract",
                       dest_agents, data_elements, f,
