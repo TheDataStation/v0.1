@@ -1,0 +1,14 @@
+front_end: "fastapi"
+storage_path: "./SM_storage/"
+log_in_memory: False
+log_path: "ds_log.pkl"
+wal_path: "wal.pkl"
+check_point_freq: 10
+table_paths: ["users.pkl", "dataelements.pkl", "policies.pkl", "stagings.pkl", "provenances.pkl"]
+mount_path: "./SM_storage_mount/"
+app_state_path: "./SM_storage/app_state.pkl"
+database_url: "sqlite:///./data_station.db"
+epf_path: "example_epm/training_scenario_exp.py"
+trust_mode: "no_trust"
+in_development_mode: True # when setting to True, functions don't run through Docker
+operating_system: "linux"
