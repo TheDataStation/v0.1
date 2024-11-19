@@ -23,7 +23,7 @@ if __name__ == '__main__':
     clean_test_env()
 
     # Step 0: System initialization
-    ds_config = "data_station_config.yaml"
+    ds_config = "./examples/join_scenario/data_station_config.yaml"
     ds = initialize_system(ds_config)
 
     ds_public_key = ds.key_manager.ds_public_key
