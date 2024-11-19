@@ -252,6 +252,7 @@ def train_cifar():
             #     wr.writerow([epoch_duration, epoch, batch_size, datasize, accuracy, test_duration])
 
     print("Done!")
+    return return_df
 
 @api_endpoint
 @function
