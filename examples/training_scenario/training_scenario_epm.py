@@ -238,6 +238,7 @@ def train_cifar():
             epoch_duration = epoch_time_end - epoch_time_start
             test_duration = test_end_time - test_start_time
 
+            print(f"Epoch {epoch+1} took {epoch_duration} seconds")
             return_df = pd.concat([return_df, pd.DataFrame({"epoch_duration": epoch_duration,
                                     "epoch": epoch,
                                     "batch_size": batch_size,
