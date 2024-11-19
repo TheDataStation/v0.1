@@ -7,6 +7,7 @@ import torch
 from torch import nn
 from torch.utils.data import Dataset, DataLoader, TensorDataset, Subset
 from torchvision import transforms
+import torch.nn.functional as F
 import pandas as pd
 import pickle
 
@@ -215,6 +216,42 @@ def train_cifar():
     X_train, y_train, X_test, y_test = get_np_cifar_data([1, 2, 3, 4, 5], 6)
     
     loss_fn = nn.CrossEntropyLoss()
+
+    batch_size = 4
+    epochs = 3
+    for datasize in [6250, 12500,25000,50000]:
+        model = CifarNetwork().to("cpu")
+        optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+
+        for epoch in range(epochs):
+            train_dataloader_subset, test_dataloader = create_cifar_dataloader(X_train, y_train, X_test, y_test, datasize, batch_size)
+
+            print(f"Epoch {epoch+1}\n-------------------------------")
+            epoch_time_start = time.perf_counter()
+            train(train_dataloader_subset, model, loss_fn, optimizer)
+            epoch_time_end = time.perf_counter()
+
+            test_start_time = epoch_time_end
+            accuracy = test(test_dataloader, model, loss_fn)
+            test_end_time = time.perf_counter()
+
+            epoch_duration = epoch_time_end - epoch_time_start
+            test_duration = test_end_time - test_start_time
+
+            return_df = pd.concat([return_df, pd.DataFrame({"epoch_duration": epoch_duration,
+                                    "epoch": epoch,
+                                    "batch_size": batch_size,
+                                    "data_size": datasize,
+                                    "accuracy": accuracy,
+                                    "test_duration": test_duration}, index=[0])], ignore_index=True)
+
+            # print(f"Epoch {epoch+1} took {epoch_duration} seconds")
+            # with open("datasize_cifar_nn.csv", "a") as fp:
+            #     wr = csv.writer(fp, dialect='excel')
+            #     # epoch_duration, epoch, batch_size, data_size, accuracy, test_duration
+            #     wr.writerow([epoch_duration, epoch, batch_size, datasize, accuracy, test_duration])
+
+    print("Done!")
 
 @api_endpoint
 @function
