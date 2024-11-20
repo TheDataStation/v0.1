@@ -10,7 +10,7 @@ from main import initialize_system
 from common.general_utils import clean_test_env
 from crypto import cryptoutils as cu
 
-NUMBERS_DIR = "./examples/training_scenario/ml"
+NUMBERS_DIR = "./examples/training_scenario/mnist"
 
 if __name__ == '__main__':
 
