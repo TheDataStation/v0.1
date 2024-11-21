@@ -145,7 +145,7 @@ SELECT DISTINCT o1.o_custkey FROM ORDERS1 o1 JOIN ORDERS2 o2 ON o1.o_custkey = o
 
     for _ in range(num_trials):
         run_start_time = time.perf_counter()
-        res = ds.call_api(agent_1_token, f, query)
+        res = ds.call_api(agent_1_token, f, queries)
         run_end_time = time.perf_counter()
         exp_start = res["experiment_time_arr"][0]
         exp_end = res["experiment_time_arr"][1]
