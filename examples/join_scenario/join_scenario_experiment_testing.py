@@ -74,57 +74,65 @@ if __name__ == '__main__':
     f = "run_queries"
     queries = [
         """
-        CREATE TABLE ORDERS1  ( O_ORDERKEY       INTEGER NOT NULL,
-            O_CUSTKEY        INTEGER NOT NULL,
-            O_ORDERSTATUS    CHAR(1) NOT NULL,
-            O_TOTALPRICE     DECIMAL(15,2) NOT NULL,
-            O_ORDERDATE      DATE NOT NULL,
-            O_ORDERPRIORITY  CHAR(15) NOT NULL,  
-            O_CLERK          CHAR(15) NOT NULL, 
-            O_SHIPPRIORITY   INTEGER NOT NULL,
-            O_COMMENT        VARCHAR(79) NOT NULL);"""
-        , """
-        CREATE TABLE ORDERS2  ( O_ORDERKEY       INTEGER NOT NULL,
-            O_CUSTKEY        INTEGER NOT NULL,
-            O_ORDERSTATUS    CHAR(1) NOT NULL,
-            O_TOTALPRICE     DECIMAL(15,2) NOT NULL,
-            O_ORDERDATE      DATE NOT NULL,
-            O_ORDERPRIORITY  CHAR(15) NOT NULL,  
-            O_CLERK          CHAR(15) NOT NULL, 
-            O_SHIPPRIORITY   INTEGER NOT NULL,
-            O_COMMENT        VARCHAR(79) NOT NULL);"""
-        , """
-        COPY ORDERS1 FROM '{de1_filepath}' DELIMITER '|';"""
-        , """
-        COPY ORDERS2 FROM '{de2_filepath}' DELIMITER '|';"""
+        CREATE TABLE ORDERS1 AS 
+            SELECT * FROM read_csv('{de1_filepath}',
+                delim = '|', header = false),
+                columns = {
+                    'O_ORDERKEY': 'INTEGER NOT NULL',
+                    'O_CUSTKEY': 'INTEGER NOT NULL',
+                    'O_ORDERSTATUS': 'CHAR(1) NOT NULL',
+                    'O_TOTALPRICE': 'DECIMAL(15,2) NOT NULL',
+                    'O_ORDERDATE': 'DATE NOT NULL',
+                    'O_ORDERPRIORITY': 'CHAR(15) NOT NULL',
+                    'O_CLERK': 'CHAR(15) NOT NULL',
+                    'O_SHIPPRIORITY': 'INTEGER NOT NULL',
+                    'O_COMMENT': 'VARCHAR(79) NOT NULL'
+                    };
+        """
+        ,
+        """
+        CREATE TABLE ORDERS2 AS 
+            SELECT * FROM read_csv('{de2_filepath}',
+                delim = '|', header = false),
+                columns = {
+                    'O_ORDERKEY': 'INTEGER NOT NULL',
+                    'O_CUSTKEY': 'INTEGER NOT NULL',
+                    'O_ORDERSTATUS': 'CHAR(1) NOT NULL',
+                    'O_TOTALPRICE': 'DECIMAL(15,2) NOT NULL',
+                    'O_ORDERDATE': 'DATE NOT NULL',
+                    'O_ORDERPRIORITY': 'CHAR(15) NOT NULL',
+                    'O_CLERK': 'CHAR(15) NOT NULL',
+                    'O_SHIPPRIORITY': 'INTEGER NOT NULL',
+                    'O_COMMENT': 'VARCHAR(79) NOT NULL'
+                    };
+        """
+        # """
+        # CREATE TABLE ORDERS1  ( O_ORDERKEY       INTEGER NOT NULL,
+        #     O_CUSTKEY        INTEGER NOT NULL,
+        #     O_ORDERSTATUS    CHAR(1) NOT NULL,
+        #     O_TOTALPRICE     DECIMAL(15,2) NOT NULL,
+        #     O_ORDERDATE      DATE NOT NULL,
+        #     O_ORDERPRIORITY  CHAR(15) NOT NULL,  
+        #     O_CLERK          CHAR(15) NOT NULL, 
+        #     O_SHIPPRIORITY   INTEGER NOT NULL,
+        #     O_COMMENT        VARCHAR(79) NOT NULL);"""
+        # , """
+        # CREATE TABLE ORDERS2  ( O_ORDERKEY       INTEGER NOT NULL,
+        #     O_CUSTKEY        INTEGER NOT NULL,
+        #     O_ORDERSTATUS    CHAR(1) NOT NULL,
+        #     O_TOTALPRICE     DECIMAL(15,2) NOT NULL,
+        #     O_ORDERDATE      DATE NOT NULL,
+        #     O_ORDERPRIORITY  CHAR(15) NOT NULL,  
+        #     O_CLERK          CHAR(15) NOT NULL, 
+        #     O_SHIPPRIORITY   INTEGER NOT NULL,
+        #     O_COMMENT        VARCHAR(79) NOT NULL);"""
+        # , """
+        # COPY ORDERS1 FROM '{de1_filepath}' DELIMITER '|';"""
+        # , """
+        # COPY ORDERS2 FROM '{de2_filepath}' DELIMITER '|';"""
         , """
         SELECT DISTINCT o1.o_custkey FROM ORDERS1 o1 JOIN ORDERS2 o2 ON o1.o_custkey = o2.o_custkey;"""
     ]
-    query = """
-CREATE TABLE ORDERS1  ( O_ORDERKEY       INTEGER NOT NULL,
-            O_CUSTKEY        INTEGER NOT NULL,
-            O_ORDERSTATUS    CHAR(1) NOT NULL,
-            O_TOTALPRICE     DECIMAL(15,2) NOT NULL,
-            O_ORDERDATE      DATE NOT NULL,
-            O_ORDERPRIORITY  CHAR(15) NOT NULL,  
-            O_CLERK          CHAR(15) NOT NULL, 
-            O_SHIPPRIORITY   INTEGER NOT NULL,
-            O_COMMENT        VARCHAR(79) NOT NULL);
-
-CREATE TABLE ORDERS2  ( O_ORDERKEY       INTEGER NOT NULL,
-            O_CUSTKEY        INTEGER NOT NULL,
-            O_ORDERSTATUS    CHAR(1) NOT NULL,
-            O_TOTALPRICE     DECIMAL(15,2) NOT NULL,
-            O_ORDERDATE      DATE NOT NULL,
-            O_ORDERPRIORITY  CHAR(15) NOT NULL,  
-            O_CLERK          CHAR(15) NOT NULL, 
-            O_SHIPPRIORITY   INTEGER NOT NULL,
-            O_COMMENT        VARCHAR(79) NOT NULL);
-
-COPY ORDERS1 FROM '{de1_filepath}' DELIMITER '|';
-COPY ORDERS2 FROM '{de2_filepath}' DELIMITER '|';
-
-SELECT DISTINCT o1.o_custkey FROM ORDERS1 o1 JOIN ORDERS2 o2 ON o1.o_custkey = o2.o_custkey;"""
     print(ds.call_api(agent_1_token, "propose_contract",
                       dest_agents, data_elements, f,
                       # function parameters
