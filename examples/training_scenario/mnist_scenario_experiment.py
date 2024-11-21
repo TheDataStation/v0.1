@@ -82,8 +82,8 @@ if __name__ == '__main__':
     # Create experiment directory
     os.makedirs(NUMBERS_DIR, exist_ok=True)
 
-    
     for datasize in [7500, 15000, 30000, 60000]:
+    # for datasize in [15000, 30000, 60000]:
         api_info = ds.call_api(agent_1_token, "propose_contract",
                         dest_agents, data_elements, f,
                         # function parameters
