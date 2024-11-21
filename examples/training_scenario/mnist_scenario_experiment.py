@@ -84,14 +84,16 @@ if __name__ == '__main__':
 
     
     for datasize in [7500, 15000, 30000, 60000]:
-
-        print(ds.call_api(agent_1_token, "propose_contract",
+        api_info = ds.call_api(agent_1_token, "propose_contract",
                         dest_agents, data_elements, f,
                         # function parameters
                         datasize
-                        ))
-        print(ds.call_api(agent_1_token, "approve_contract", 1))
-        print(ds.call_api(agent_2_token, "approve_contract", 1))
+                        )
+        contract_id = api_info['contract_id']
+        print(api_info, contract_id)
+        print(ds.call_api(agent_1_token, "approve_contract", contract_id))
+        print(ds.call_api(agent_2_token, "approve_contract", contract_id))
+
 
         for _ in range(1):
             run_start_time = time.perf_counter()
