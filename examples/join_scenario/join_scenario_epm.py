@@ -46,3 +46,24 @@ def run_query(query):
     print("total query time: ", query_end_time - query_start_time)
     return res_df
 
+@api_endpoint
+@function
+def run_queries(queries):
+    """
+    Run a user given query.
+    """
+    conn = duckdb.connect()
+
+    for query in queries:
+        query_start_time = time.perf_counter()
+
+        updated_query = update_query(query)
+        print(updated_query)
+        res_df = conn.execute(updated_query).fetchdf()
+
+        query_end_time = time.perf_counter()
+        print("total query time: ", query_end_time - query_start_time)
+    conn.close()
+    # print("total query time: ", query_end_time - query_start_time)
+    return res_df
+
