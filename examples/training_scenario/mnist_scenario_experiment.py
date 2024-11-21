@@ -17,7 +17,7 @@ if __name__ == '__main__':
     # Experiment setups
     # num_MB = sys.argv[1]
 
-    # num_trials = int(sys.argv[2])
+    num_trials = int(sys.argv[1])
 
     # Clean up
     clean_test_env()
@@ -95,7 +95,7 @@ if __name__ == '__main__':
         print(ds.call_api(agent_2_token, "approve_contract", contract_id))
 
 
-        for _ in range(1):
+        for _ in range(num_trials):
             run_start_time = time.perf_counter()
             res = ds.call_api(agent_1_token, f, datasize)
             run_end_time = time.perf_counter()
