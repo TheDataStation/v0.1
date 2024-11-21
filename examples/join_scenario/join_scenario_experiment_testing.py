@@ -77,7 +77,7 @@ if __name__ == '__main__':
         CREATE TABLE ORDERS1 AS 
             SELECT * FROM read_csv('{de1_filepath}',
                 delim = '|', header = false,
-                columns = {
+                columns = {{
                     'O_ORDERKEY': 'INTEGER NOT NULL',
                     'O_CUSTKEY': 'INTEGER NOT NULL',
                     'O_ORDERSTATUS': 'CHAR(1) NOT NULL',
@@ -87,14 +87,14 @@ if __name__ == '__main__':
                     'O_CLERK': 'CHAR(15) NOT NULL',
                     'O_SHIPPRIORITY': 'INTEGER NOT NULL',
                     'O_COMMENT': 'VARCHAR(79) NOT NULL'
-                    });
+                    }});
         """
         ,
         """
         CREATE TABLE ORDERS2 AS 
             SELECT * FROM read_csv('{de2_filepath}',
                 delim = '|', header = false,
-                columns = {
+                columns = {{
                     'O_ORDERKEY': 'INTEGER NOT NULL',
                     'O_CUSTKEY': 'INTEGER NOT NULL',
                     'O_ORDERSTATUS': 'CHAR(1) NOT NULL',
@@ -104,7 +104,7 @@ if __name__ == '__main__':
                     'O_CLERK': 'CHAR(15) NOT NULL',
                     'O_SHIPPRIORITY': 'INTEGER NOT NULL',
                     'O_COMMENT': 'VARCHAR(79) NOT NULL'
-                    });
+                    }});
         """
         # """
         # CREATE TABLE ORDERS1  ( O_ORDERKEY       INTEGER NOT NULL,
