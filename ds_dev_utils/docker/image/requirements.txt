@@ -8,3 +8,4 @@ duckdb
 scipy
 scikit-learn==1.2.0
 torch
+torchvision
