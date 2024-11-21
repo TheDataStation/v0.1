@@ -97,7 +97,7 @@ if __name__ == '__main__':
 
         for _ in range(1):
             run_start_time = time.perf_counter()
-            res = ds.call_api(agent_1_token, f, )
+            res = ds.call_api(agent_1_token, f, datasize)
             run_end_time = time.perf_counter()
             print("result: ", res)
             
