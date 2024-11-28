@@ -137,7 +137,8 @@ if __name__ == '__main__':
         api_info = ds.call_api(agent_1_token, "propose_contract",
                         dest_agents, data_elements, f,
                         # function parameters
-                        datasize
+                        datasize,
+                        num_agents
                         )
         contract_id = api_info['contract_id']
         print(api_info, contract_id)
@@ -147,7 +148,7 @@ if __name__ == '__main__':
 
         for _ in range(num_trials):
             run_start_time = time.perf_counter()
-            res = ds.call_api(agent_1_token, f, datasize)
+            res = ds.call_api(agent_1_token, f, datasize, num_agents)
             run_end_time = time.perf_counter()
             print("result: ", res)
             
