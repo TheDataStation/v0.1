@@ -103,6 +103,13 @@ def load_mnist(image_path, label_path):
 
     return images, labels
 
+def unpickle_mnist(image_path, label_path):
+    with open(image_path, 'rb') as f:
+        images = pickle.load(f)
+    with open(label_path, 'rb') as f:
+        labels = pickle.load(f)
+    return images, labels
+
 def get_raw_mnist_data(train_image_idx, train_label_idx, test_image_idx, test_label_idx):
     """
     Given the indices of the mnist data elements, returns the raw data
@@ -340,17 +347,25 @@ def get_raw_mp_mnist_data(train_image_idxs, train_label_idxs, test_image_idxs, t
     """
     Given the indices of the mnist data elements, returns the raw data
     """
-    X_train, y_train = load_mnist(
+    if len(train_image_idxs) != len(train_label_idxs) or len(test_image_idxs) != len(test_label_idxs):
+        print("train_image_idxs: ", train_image_idxs)
+        print("The number of image and label data elements must be the same")
+        raise ValueError("The number of image and label data elements must be the same")
+
+    if len(train_image_idxs) == 1:
+        return get_raw_mnist_data(train_image_idxs[0], train_label_idxs[0], test_image_idxs[0], test_label_idxs[0])
+
+    X_train, y_train = unpickle_mnist(
         EscrowAPI.CSVDEStore.read(train_image_idxs[0]),
         EscrowAPI.CSVDEStore.read(train_label_idxs[0])
     )
-    X_test, y_test = load_mnist(
+    X_test, y_test = unpickle_mnist(
         EscrowAPI.CSVDEStore.read(test_image_idxs[0]),
         EscrowAPI.CSVDEStore.read(test_label_idxs[0])
     )
     
     for i in range(1, len(train_image_idxs)):
-        X_train_temp, y_train_temp = load_mnist(
+        X_train_temp, y_train_temp = unpickle_mnist(
             EscrowAPI.CSVDEStore.read(train_image_idxs[i]),
             EscrowAPI.CSVDEStore.read(train_label_idxs[i])
         )
@@ -358,7 +373,7 @@ def get_raw_mp_mnist_data(train_image_idxs, train_label_idxs, test_image_idxs, t
         y_train = np.hstack((y_train, y_train_temp))
     
     for i in range(1, len(test_image_idxs)):
-        X_test_temp, y_test_temp = load_mnist(
+        X_test_temp, y_test_temp = unpickle_mnist(
             EscrowAPI.CSVDEStore.read(test_image_idxs[i]),
             EscrowAPI.CSVDEStore.read(test_label_idxs[i])
         )
