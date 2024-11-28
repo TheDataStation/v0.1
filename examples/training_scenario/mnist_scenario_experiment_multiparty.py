@@ -68,7 +68,7 @@ if __name__ == '__main__':
         
         save_split_mnist(train_image_splits, train_label_splits, "train")
         save_split_mnist(test_image_splits, test_label_splits, "t10k")
-        sys.exit(0)
+        # sys.exit(0)
 
     # Step 0: System initialization
     ds_config = "./examples/training_scenario/data_station_config.yaml"
