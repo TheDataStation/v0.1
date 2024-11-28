@@ -258,7 +258,7 @@ def train_cifar(datasize):
 
 @api_endpoint
 @function
-def train_mnist(datasize):
+def train_mnist(datasize, num_parties):
     """
     trains a simple model on mnist dataset
     """
@@ -284,9 +284,18 @@ def train_mnist(datasize):
             x = self.flatten(x)
             logits = self.linear_relu_stack(x)
             return logits
-        
-    X_train, y_train, X_test, y_test = get_raw_mnist_data(1, 2, 3, 4)
     
+    train_image_idxs = []
+    train_label_idxs = []
+    test_image_idxs = []
+    test_label_idxs = []
+    for i in range(1, num_parties+1):
+        train_image_idxs.append(i)
+        train_label_idxs.append(i+num_parties)
+        test_image_idxs.append(i+2*num_parties)
+        test_label_idxs.append(i+3*num_parties)
+    X_train, y_train, X_test, y_test = get_raw_mp_mnist_data(train_image_idxs, train_label_idxs, test_image_idxs, test_label_idxs)
+
     loss_fn = nn.CrossEntropyLoss()
 
     epochs = 3
@@ -326,3 +335,34 @@ def train_mnist(datasize):
 
     print("Done!")
     return return_df
+
+def get_raw_mp_mnist_data(train_image_idxs, train_label_idxs, test_image_idxs, test_label_idxs):
+    """
+    Given the indices of the mnist data elements, returns the raw data
+    """
+    X_train, y_train = load_mnist(
+        EscrowAPI.CSVDEStore.read(train_image_idxs[0]),
+        EscrowAPI.CSVDEStore.read(train_label_idxs[0])
+    )
+    X_test, y_test = load_mnist(
+        EscrowAPI.CSVDEStore.read(test_image_idxs[0]),
+        EscrowAPI.CSVDEStore.read(test_label_idxs[0])
+    )
+    
+    for i in range(1, len(train_image_idxs)):
+        X_train_temp, y_train_temp = load_mnist(
+            EscrowAPI.CSVDEStore.read(train_image_idxs[i]),
+            EscrowAPI.CSVDEStore.read(train_label_idxs[i])
+        )
+        X_train = np.vstack((X_train, X_train_temp))
+        y_train = np.hstack((y_train, y_train_temp))
+    
+    for i in range(1, len(test_image_idxs)):
+        X_test_temp, y_test_temp = load_mnist(
+            EscrowAPI.CSVDEStore.read(test_image_idxs[i]),
+            EscrowAPI.CSVDEStore.read(test_label_idxs[i])
+        )
+        X_test = np.vstack((X_test, X_test_temp))
+        y_test = np.hstack((y_test, y_test_temp))
+    
+    return X_train, y_train, X_test, y_test
