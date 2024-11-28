@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
     # Step 3: Train the joint model.
     dest_agents = [1]
-    data_elements = range(num_agents * 4) + 1
+    data_elements = range(1, num_agents * 4 + 1)
     print(data_elements)
     f = "train_mnist"
     
