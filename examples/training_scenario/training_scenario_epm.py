@@ -265,7 +265,7 @@ def train_cifar(datasize):
 
 @api_endpoint
 @function
-def train_mnist(datasize, num_parties):
+def train_mnist(datasize, num_agents):
     """
     trains a simple model on mnist dataset
     """
@@ -296,7 +296,7 @@ def train_mnist(datasize, num_parties):
     train_label_idxs = []
     test_image_idxs = []
     test_label_idxs = []
-    for i in range(num_parties):
+    for i in range(num_agents):
         addition = 4*i
         train_image_idxs.append(1+addition)
         train_label_idxs.append(2+addition)
@@ -334,7 +334,8 @@ def train_mnist(datasize, num_parties):
                                 "batch_size": batch_size,
                                 "data_size": datasize,
                                 "accuracy": accuracy,
-                                "test_duration": test_duration}, index=[0])], ignore_index=True)
+                                "test_duration": test_duration,
+                                "num_agents": num_agents}, index=[0])], ignore_index=True)
 
             # with open("datasize_nn.csv", "a") as fp:
             #     wr = csv.writer(fp, dialect='excel')

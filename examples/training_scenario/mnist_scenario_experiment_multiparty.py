@@ -11,7 +11,7 @@ from main import initialize_system
 from common.general_utils import clean_test_env
 from crypto import cryptoutils as cu
 
-NUMBERS_DIR = "./examples/training_scenario/mnist"
+NUMBERS_DIR = "./examples/training_scenario/mnist_mp"
 
 # code is modified from mnist_reader.py in fashion-mnist repository
 def load_mnist(image_path, label_path):
@@ -153,14 +153,14 @@ if __name__ == '__main__':
             print("result: ", res)
             
             # res_df = pd.DataFrame(res)
-            res['result'].to_csv(f"{NUMBERS_DIR}/mnist.csv", mode='a', index=False)
+            res['result'].to_csv(f"{NUMBERS_DIR}/mnist-mp-{num_agents}.csv", mode='a', index=False)
         # exp_start = res["experiment_time_arr"][0]
         # exp_end = res["experiment_time_arr"][1]
         # decrypt_time = res["experiment_time_arr"][2]
         # print("Experiment time:", exp_end - exp_start)
         # print("Decrypt time:", decrypt_time)
         # # 1: fixed overhead 2: join DE time 3: model train time 4: fixed overhead
-            with open(f"{NUMBERS_DIR}/mnist_total_time.csv", "a") as file:
+            with open(f"{NUMBERS_DIR}/mnist_total_time-mp-{num_agents}.csv", "a") as file:
                 writer = csv.writer(file)
                 if res["result"] is not None:
                     writer.writerow([run_end_time - run_start_time, datasize])
