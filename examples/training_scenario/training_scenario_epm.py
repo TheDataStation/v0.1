@@ -296,7 +296,7 @@ def train_mnist(datasize, num_parties):
     train_label_idxs = []
     test_image_idxs = []
     test_label_idxs = []
-    for i in range(1, num_parties+1):
+    for i in range(num_parties):
         addition = 4*i
         train_image_idxs.append(1+addition)
         train_label_idxs.append(2+addition)
