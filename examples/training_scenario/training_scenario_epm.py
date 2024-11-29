@@ -273,7 +273,7 @@ def train_mnist(datasize, num_agents):
 
     
     # return dataframe
-    return_df = pd.DataFrame(columns=["epoch_duration", "epoch", "batch_size", "data_size", "accuracy", "test_duration"])
+    return_df = pd.DataFrame(columns=["epoch_duration", "epoch", "batch_size", "data_size", "accuracy", "test_duration","num_agents"])
 
     class NeuralNetwork(nn.Module):
         def __init__(self):
