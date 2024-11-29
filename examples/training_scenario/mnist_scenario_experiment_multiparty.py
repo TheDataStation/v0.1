@@ -91,7 +91,7 @@ if __name__ == '__main__':
     # Step 1: Agent creation. 2 agents: facebook and youtube.
     cipher_sym_key_list = []
     public_key_list = []
-    agents = ["1", "2"]
+    agents = [str(i+1) for i in range(num_agents)]
     for i in range(len(agents)):
         sym_key = b'oHRZBUvF_jn4N3GdUpnI6mW8mts-EB7atAUjhVNMI58='
         cipher_sym_key = cu.encrypt_data_with_public_key(sym_key, ds_public_key)
@@ -100,17 +100,15 @@ if __name__ == '__main__':
         public_key_list.append(cur_public_key)
         ds.create_agent(agents[i], "string", cipher_sym_key_list[i], public_key_list[i], )
 
-    agent_1_token = ds.login_agent("1", "string")["data"]
-    agent_2_token = ds.login_agent("2", "string")["data"]
+    agent_tokens = []
+    for agent in agents:
+        agent_tokens.append(ds.login_agent(agent, "string")["data"])
+    # agent_1_token = ds.login_agent("1", "string")["data"]
+    # agent_2_token = ds.login_agent("2", "string")["data"]
 
     # Step 2: Upload the data.
     for agent in agents:
-        if agent == "1":
-            cur_token = agent_1_token
-        else:
-            cur_token = agent_2_token
-        # agent 1 has train, agent 2 has test. This doesn't matter because 
-        # integration in this case is simply an append.
+        cur_token = agent_tokens[int(agent) - 1]
         agent_des = []
         for prefix in ["train", "t10k"]:
             agent_des.append(f"fashion-mnist/data/fashion/{prefix}-images-mp-{agent}-{num_agents}")
@@ -134,7 +132,7 @@ if __name__ == '__main__':
 
     for datasize in [7500, 15000, 30000, 60000]:
     # for datasize in [15000, 30000, 60000]:
-        api_info = ds.call_api(agent_1_token, "propose_contract",
+        api_info = ds.call_api(agent_tokens[0], "propose_contract",
                         dest_agents, data_elements, f,
                         # function parameters
                         datasize,
@@ -142,8 +140,10 @@ if __name__ == '__main__':
                         )
         contract_id = api_info['contract_id']
         print(api_info, contract_id)
-        print(ds.call_api(agent_1_token, "approve_contract", contract_id))
-        print(ds.call_api(agent_2_token, "approve_contract", contract_id))
+        for agent_token in agent_tokens:
+            print(ds.call_api(agent_token, "approve_contract", contract_id))
+        # print(ds.call_api(agent_1_token, "approve_contract", contract_id))
+        # print(ds.call_api(agent_2_token, "approve_contract", contract_id))
 
 
         for _ in range(num_trials):
