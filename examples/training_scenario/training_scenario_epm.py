@@ -297,10 +297,11 @@ def train_mnist(datasize, num_parties):
     test_image_idxs = []
     test_label_idxs = []
     for i in range(1, num_parties+1):
-        train_image_idxs.append(i)
-        train_label_idxs.append(i+num_parties)
-        test_image_idxs.append(i+2*num_parties)
-        test_label_idxs.append(i+3*num_parties)
+        addition = 4*i
+        train_image_idxs.append(1+addition)
+        train_label_idxs.append(2+addition)
+        test_image_idxs.append(3+addition)
+        test_label_idxs.append(4+addition)
     X_train, y_train, X_test, y_test = get_raw_mp_mnist_data(train_image_idxs, train_label_idxs, test_image_idxs, test_label_idxs)
 
     loss_fn = nn.CrossEntropyLoss()
