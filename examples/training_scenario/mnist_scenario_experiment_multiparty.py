@@ -28,8 +28,8 @@ def load_mnist(image_path, label_path):
 
 def split_mnist(image_path, label_path, num_agents):
     images, labels = load_mnist(image_path, label_path)
-    image_splits = np.split(images, num_agents)
-    label_splits = np.split(labels, num_agents)
+    image_splits = np.array_split(images, num_agents)
+    label_splits = np.array_split(labels, num_agents)
     return image_splits, label_splits
 
 def save_split_mnist(image_splits, label_splits, prefix):
